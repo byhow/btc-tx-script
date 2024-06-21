@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  deno-app:
+    container_name: deno-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
+
+networks:
+  app-network:
+    driver: bridge
