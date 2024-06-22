@@ -1,32 +1,24 @@
-version: '3.8'
 services:
   deno-app:
+    build: .
     container_name: deno-app
-    build:
-      context: .
-      dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    environment:
-      - MONGO_URL=mongodb://mongo:27017/mydatabase
     depends_on:
-      - mongo
-    networks:
-      - app-network
-
-  mongo:
-    container_name: mongo
-    image: mongo:latest
+      - mongodb
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/btc-transactions
+    command: ["./wait-for-it.sh", "mongodb:27017", "--", "deno", "run", "--allow-net", "--allow-env", "index.ts"]
     volumes:
-      - mongo-data:/data/db
+      - .:/app
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
     ports:
       - "27017:27017"
-    networks:
-      - app-network
+    volumes:
+      - mongo-data:/data/db
 
 volumes:
   mongo-data:
-
-networks:
-  app-network:
-    driver: bridge

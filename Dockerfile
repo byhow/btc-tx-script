@@ -1,14 +1,17 @@
-# Use the official Deno image
 FROM denoland/deno:alpine
-
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy your application code to the container
+# Install netcat
+RUN apk add --no-cache netcat-openbsd
+# Copy the application files
 COPY . .
 
-# Expose the port your app runs on
-EXPOSE 8000
+# Copy the wait-for-it script
+COPY wait-for-it.sh /app/wait-for-it.sh
+RUN chmod +x /app/wait-for-it.sh
 
-# Run your Deno application
-CMD ["run", "--allow-net", "index.ts"]
+# Cache the dependencies as a layer
+RUN deno cache index.ts
+
+# Set the entry point for the container
+CMD ["./wait-for-it.sh", "mongodb", "27017", "--", "deno", "run", "--allow-net", "--allow-env", "index.ts"]
