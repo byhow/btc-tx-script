@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   deno-app:
     build: .
@@ -8,9 +10,7 @@ services:
       - mongodb
     environment:
       MONGO_URI: mongodb://mongodb:27017/btc-transactions
-    command: ["./wait-for-it.sh", "mongodb:27017", "--", "deno", "run", "--allow-net", "--allow-env", "index.ts"]
-    volumes:
-      - .:/app
+    command: run --allow-net --allow-env index.ts
 
   mongodb:
     image: mongo:latest
