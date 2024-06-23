@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Cache the dependencies as a layer
-RUN deno cache index.ts
+RUN deno cache src/index.ts
 
 # Set the entry point for the container
-CMD ["run", "--allow-net", "--allow-env", "index.ts"]
+CMD ["run", "--allow-net", "--allow-read", "--allow-env", "src/index.ts"]

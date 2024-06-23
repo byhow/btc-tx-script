@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   deno-app:
     build: .
@@ -10,7 +8,7 @@ services:
       - mongodb
     environment:
       MONGO_URI: mongodb://mongodb:27017/btc-transactions
-    command: run --allow-net --allow-env index.ts
+    command: run --allow-net --allow-env --allow-read src/index.ts
 
   mongodb:
     image: mongo:latest
