@@ -7,7 +7,7 @@ services:
     depends_on:
       - mongodb
     environment:
-      MONGO_URI: mongodb://mongodb:27017/btc-transactions
+      MONGO_URI: mongodb://mongodb:27017/btc
     command: run --allow-net --allow-env --allow-read src/index.ts
 
   mongodb:

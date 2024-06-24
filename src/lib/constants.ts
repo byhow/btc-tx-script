@@ -11,3 +11,13 @@ export const customerAddresses: CustomerAddresses = {
   "miTHhiX3iFhVnAEecLjybxvV5g8mKYTtnM": "James T. Kirk",
   "mvcyJMiAcSXKAEsQxbW9TYZ369rsMG6rVV": "Spock"
 };
+
+export const names = [
+  "Wesley Crusher",
+  "Leonard McCoy",
+  "Jonathan Archer",
+  "Jadzia Dax",
+  "Montgomery Scott",
+  "James T. Kirk",
+  "Spock"
+];
