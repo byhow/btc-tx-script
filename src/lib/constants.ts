@@ -1,4 +1,4 @@
-type CustomerAddresses = {
+export type CustomerAddresses = {
   [key: string]: string;
 };
 

@@ -1,9 +1,9 @@
 // Import the latest major version of the MongoDB driver
-import { Collection } from "https://deno.land/x/mongo@v0.31.1/mod.ts";
-import { Transaction } from "./types.ts";
+import type { Collection } from "https://deno.land/x/mongo@v0.31.1/mod.ts";
+import type { Transaction } from "../models/deposit.ts";
 
-export function aggregateDeposits(txCollection: Collection<Transaction>) {
-  return txCollection.aggregate<{ amount: number; count: number, address: string }>([
+export const aggregateDeposits = (txCollection: Collection<Transaction>) =>
+  txCollection.aggregate<{ amount: number; count: number, address: string }>([
     {
       $match: {
         $and: [
@@ -40,10 +40,9 @@ export function aggregateDeposits(txCollection: Collection<Transaction>) {
       }
     },
   ]).toArray();
-}
 
-export function countMinMax(txCollection: Collection<Transaction>) {
-  return txCollection.aggregate<{
+export const countMinMax = (txCollection: Collection<Transaction>) =>
+  txCollection.aggregate<{
     minDeposit: number;
     maxDeposit: number;
   }>([
@@ -61,5 +60,4 @@ export function countMinMax(txCollection: Collection<Transaction>) {
       }
     }
   ]).toArray();
-}
 
