@@ -8,7 +8,12 @@ const MONGO_URI = Deno.env.get("MONGO_URI") || "mongodb://mongo:27017";
 
 const client = new MongoClient();
 
-async function connectWithRetry() {
+/**
+ * Connects to MongoDB with retry logic.
+ *
+ * @returns {Promise<void>} A promise that resolves when the connection is successful.
+ */
+async function connectWithRetry(): Promise<void> {
   while (true) {
     try {
       console.log("Connecting to MongoDB at...", MONGO_URI);
@@ -18,13 +23,16 @@ async function connectWithRetry() {
     } catch (error) {
       console.error("Failed to connect to MongoDB:", error);
       console.log("Retrying in 2 seconds...");
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for 2 seconds before retrying
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for 2 seconds before retrying
     }
   }
 }
 
 async function main() {
-  const jsonFilePaths = ["data/transactions-1.json", "data/transactions-2.json"];
+  const jsonFilePaths = [
+    "data/transactions-1.json",
+    "data/transactions-2.json",
+  ];
   const transactionMeta = await readAndParseJsonFiles(jsonFilePaths);
 
   await connectWithRetry();
@@ -34,7 +42,7 @@ async function main() {
 
   const [aggregatedDeposits, minMax] = await Promise.all([
     aggregateDeposits(tx),
-    countMinMax(tx)
+    countMinMax(tx),
   ]);
   printTransactionSummary(aggregatedDeposits, customerAddresses, minMax);
 }

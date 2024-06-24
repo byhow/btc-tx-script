@@ -6,7 +6,14 @@ import type {
 import { type CustomerAddresses, names } from "./constants.ts";
 import { aggregateDeposits, countMinMax } from "./db.ts";
 
-// New function to process transactions
+/**
+ * Processes transactions from multiple file paths and returns a map of addresses to transaction data.
+ * Only transactions with at least 6 confirmations and either "receive" category or non-negative amount are included.
+ * (this is a local first approach to simulate what the expected output would be)
+ *
+ * @param filePaths - An array of file paths containing transaction data in JSON format.
+ * @returns A Promise that resolves to a map of addresses to arrays of transaction data.
+ */
 async function processTransactions(
   filePaths: string[],
 ): Promise<Map<string, UTXOTransactionSchema[]>> {
@@ -44,6 +51,15 @@ async function processTransactions(
   return bufferedData;
 }
 
+/**
+ * Processes the transactions from the provided JSON files and logs the results.
+ *
+ * (this is a local first approach to simulate what the expected output would be)
+ *
+ * @param jsonFilePaths - An array of file paths to the JSON files containing the transactions.
+ * @param customerAddresses - A record of customer addresses, where the key is the address and the value is the customer name.
+ * @returns void
+ */
 export async function processAndLogTransactions(
   jsonFilePaths: string[],
   customerAddresses: Record<string, string>,
@@ -95,7 +111,8 @@ export async function processAndLogTransactions(
   names.forEach((name) => {
     if (knownCustomerMeta[name]) {
       console.log(
-        `Deposited for ${name}: count=${knownCustomerMeta[name].count} sum=${knownCustomerMeta[name].sum
+        `Deposited for ${name}: count=${knownCustomerMeta[name].count} sum=${
+          knownCustomerMeta[name].sum
         }`,
       );
     }
@@ -107,6 +124,12 @@ export async function processAndLogTransactions(
   console.log(`Largest valid deposit: ${largestDeposit}`);
 }
 
+/**
+ * Checks for duplicates in the transaction data.
+ * This is used to differentiate between transactions with the same txid but different vout values.
+ *
+ * @param data - The transaction data to check for duplicates.
+ */
 export const checkDuplicates = (data: TransactionResponse) => {
   // Assuming jsonFilePaths, jsonData, data, and UTXOTransactionSchema are defined as in your provided code snippet.
   const txIdOnlySet = new Set<string>();
@@ -137,6 +160,13 @@ export const checkDuplicates = (data: TransactionResponse) => {
   });
 };
 
+/**
+ * Prints a summary of the transaction in the requirements format.
+ *
+ * @param aggregatedDeposits - The aggregated deposits.
+ * @param customerAddresses - The customer addresses.
+ * @param minMax - The minimum and maximum deposit values.
+ */
 export const printTransactionSummary = (
   aggregatedDeposits: Awaited<ReturnType<typeof aggregateDeposits>>,
   customerAddresses: CustomerAddresses,
@@ -157,7 +187,8 @@ export const printTransactionSummary = (
   }
   names.forEach((name) => {
     console.log(
-      `Deposited for ${name}: count=${knownCustomerMeta[name].count} sum=${knownCustomerMeta[name].sum
+      `Deposited for ${name}: count=${knownCustomerMeta[name].count} sum=${
+        knownCustomerMeta[name].sum
       }`,
     );
   });
@@ -168,6 +199,12 @@ export const printTransactionSummary = (
   console.log(`Largest valid deposit: ${minMax[0].maxDeposit}`);
 };
 
+/**
+ * Reads and parses JSON files asynchronously.
+ *
+ * @param filePaths - An array of file paths to read and parse.
+ * @returns A Promise that resolves to an array of transactions.
+ */
 export async function readAndParseJsonFiles(
   filePaths: string[],
 ): Promise<Transaction[]> {

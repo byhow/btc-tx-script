@@ -5,7 +5,7 @@ export type UTXOTransactionSchema = {
   confirmations: number;
   name?: string;
   vout: number;
-}
+};
 
 export type TransactionResponse = {
   transactions: Transaction[];
